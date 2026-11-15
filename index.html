@@ -1,16 +1,14 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#5b3a8c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Miss Ayoya"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="color-scheme" content="light"><meta name="theme-color" content="#5b3a8c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Miss Ayoya"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Miss Ayoya Teacher System</title>
 
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Fredoka:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Baloo+Bhaijaan+2:wght@400;600;700&family=Cairo:wght@400;600;700&family=Fredoka:wght@400;500;600;700&family=Gaegu:wght@400;700&family=Mali:wght@400;500;600;700&family=Patrick+Hand&display=swap">
 <style>
 /* Layout: purple sidebar + pastel card dashboard, drawer sidebar on phones */
-:root{--bg:#f7f2ff;--surface:#fff;--fg:#2d1f4e;--muted:#6d5f8f;--line:#e2d9f5;--accent:#7c3fbf;--accent-fg:#fff;--pink:#e0568f;--side1:#6a42a3;--side2:#4e2f80;--side-fg:#f3ecff;--c0:#ffd9e6;--c1:#fff0c4;--c2:#c9f0e6;--c3:#e4d8fc;--ok:#1f8a4d;--okbg:#dff5e8;--warn:#a06400;--warnbg:#fdf0d4;--bad:#bd2b3f;--badbg:#fde3e6;--shadow:0 3px 10px rgba(80,50,140,.12);--bgimg:linear-gradient(135deg,#faf6ff 0%,#eef2ff 45%,#fdf0fa 100%);--font:'Fredoka','Cairo',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17112a;--surface:#221a3a;--fg:#efe9ff;--muted:#b0a4d4;--line:#392d5e;--accent:#b98cf2;--accent-fg:#1c1033;--pink:#ff8fb8;--side1:#2c1f4d;--side2:#1f1538;--side-fg:#eadfff;--c0:#4a2540;--c1:#4a4122;--c2:#1f4540;--c3:#3a2c63;--ok:#6fd49a;--okbg:#1c3327;--warn:#f0bd5c;--warnbg:#3a2f16;--bad:#ff9aa8;--badbg:#44202a;--shadow:0 3px 10px rgba(0,0,0,.35);--bgimg:none;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#17112a;--surface:#221a3a;--fg:#efe9ff;--muted:#b0a4d4;--line:#392d5e;--accent:#b98cf2;--accent-fg:#1c1033;--pink:#ff8fb8;--side1:#2c1f4d;--side2:#1f1538;--side-fg:#eadfff;--c0:#4a2540;--c1:#4a4122;--c2:#1f4540;--c3:#3a2c63;--ok:#6fd49a;--okbg:#1c3327;--warn:#f0bd5c;--warnbg:#3a2f16;--bad:#ff9aa8;--badbg:#44202a;--shadow:0 3px 10px rgba(0,0,0,.35);--bgimg:none;color-scheme:dark}
+:root{--bg:#f7f2ff;--surface:#fff;--fg:#2d1f4e;--muted:#6d5f8f;--line:#e2d9f5;--accent:#7c3fbf;--accent-fg:#fff;--pink:#e0568f;--side1:#6a42a3;--side2:#4e2f80;--side-fg:#f3ecff;--c0:#ffd9e6;--c1:#fff0c4;--c2:#c9f0e6;--c3:#e4d8fc;--ok:#1f8a4d;--okbg:#dff5e8;--warn:#a06400;--warnbg:#fdf0d4;--bad:#bd2b3f;--badbg:#fde3e6;--shadow:0 3px 10px rgba(80,50,140,.12);--bgimg:linear-gradient(135deg,#faf6ff 0%,#eef2ff 45%,#fdf0fa 100%);color-scheme:light;--font:'Fredoka','Cairo',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif}
 *{box-sizing:border-box}
 body{background:var(--bg);background-image:var(--bgimg);color:var(--fg);font-family:var(--font);font-size:15px;line-height:1.5;padding-block:12px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2,h3{margin:0;font-weight:600}
@@ -40,8 +38,6 @@ h2{font-size:1.15rem}h3{font-size:1rem}
 .ctile{border:0;border-radius:16px;padding:12px 8px;text-align:center;font:inherit;color:#2d1f4e;cursor:pointer}
 .ctile b{display:block;font-size:1.5rem}
 .c0{background:var(--c0)}.c1{background:var(--c1)}.c2{background:var(--c2)}.c3{background:var(--c3)}
-:root[data-theme="dark"] .ctile,:root[data-theme="dark"] .qa,:root[data-theme="dark"] .ov{color:var(--fg)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ctile,:root:not([data-theme="light"]) .qa,:root:not([data-theme="light"]) .ov{color:var(--fg)}}
 .qa-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:10px}
 .qa{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:10px 6px;text-align:center;font:inherit;color:var(--fg);cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center}
 .qa .ic{font-size:1.5rem}
@@ -385,13 +381,13 @@ function vAtt(){
 function vHw(){
   const cl=classes();if(!cl.length)return needCls();
   if(!fc)fc=cl[0].code;
-  const f=`<div class="form"><div><label for="h-t">${tr('title')}</label><input id="h-t" autocomplete="off"></div><div><label for="h-c">${tr('cls')}</label><select id="h-c">${clsOpts(fc)}</select></div><div><label for="h-g">${tr('given')}</label><input id="h-g" type="date" value="${today()}"></div><div><label for="h-d">${tr('due')}</label><input id="h-d" type="date"></div><div><label for="h-m">${tr('maxmark')}</label><input id="h-m" type="number" value="10"></div><button class="btn pri" data-act="add-hw">${tr('addhw')}</button></div>`;
+  const f=`<div class="form"><div><label for="h-t">${tr('title')}</label><input id="h-t" autocomplete="off"></div><div><label for="h-c">${tr('cls')}</label><select id="h-c">${clsOpts(fc)}</select></div><div><label for="h-g">${tr('given')}</label><input id="h-g" type="date" value="${today()}"></div><div><label for="h-d">${tr('due')}</label><input id="h-d" type="date"></div><div><label for="h-m">${tr('maxmark')}</label><input id="h-m" type="number" value="10"></div><div><label for="h-w">${tr('wherecorr')}</label><select id="h-w" data-act="hw-where">${whereOpts('')}</select></div><div id="h-wo-wrap" style="display:none"><label for="h-wo">${tr('w_other_ph')}</label><input id="h-wo" autocomplete="off"></div><div><label for="h-k">${tr('weekno')}</label><input id="h-k" type="number" min="1" value="${weekOf(today())}"></div><button class="btn pri" data-act="add-hw">${tr('addhw')}</button></div>`;
   const hs=all('hw').sort((a,b)=>b.given.localeCompare(a.given));
   const list=hs.length?hs.map(h=>{const doc=D['hwr_'+h.id]||{r:{}},sts=students(h.cls),o=openId===h.id;
     const n=sts.filter(s=>{const r=doc.r&&doc.r[s.id];return r&&r.s&&r.s!=='missing'&&r.s!=='nohw'}).length;
-    const body=o?'<div style="margin-top:8px">'+(sts.length?sts.map(s=>{const r=(doc.r&&doc.r[s.id])||{},a=`data-act="hw-set" data-h="${h.id}" data-s="${s.id}"`;
+    const body=o?'<div style="margin-top:8px">'+hwEdit(h)+(sts.length?sts.map(s=>{const r=(doc.r&&doc.r[s.id])||{},a=`data-act="hw-set" data-h="${h.id}" data-s="${s.id}"`;
       return `<div class="line"><span class="nm">${esc(s.name)}</span>${seg([['complete',tr('complete'),'ok'],['incomplete',tr('incomplete'),'warn'],['late',tr('late'),'warn'],['missing',tr('missing'),'bad']],r.s,a)}<input class="num" type="number" placeholder="${tr('mark')}" value="${esc(r.m==null?'':r.m)}" data-act="hw-mark" data-h="${h.id}" data-s="${s.id}" aria-label="${tr('mark')} ${esc(s.name)}"></div>`}).join(''):`<div class="empty">${tr('needstu')}</div>`)+`<div style="margin-top:8px">${delBtn('del-hw',h.id)}</div></div>`:'';
-    return `<div class="panel" style="margin-top:10px"><div class="ph2" data-act="open" data-id="${h.id}" style="cursor:pointer"><span><b>${esc(h.title)}</b><br><span class="muted small">${esc(h.cls)} · ${fds(h.given)}${h.due?' → '+fds(h.due):''} · ${tr('maxmark')} ${esc(h.max)}</span></span><span class="pill ${n&&n===sts.length?'ok':'warn'}">${n}/${sts.length}</span></div>${body}</div>`}).join(''):`<div class="empty" style="margin-top:10px">${tr('noasg')}</div>`;
+    return `<div class="panel" style="margin-top:10px"><div class="ph2" data-act="open" data-id="${h.id}" style="cursor:pointer"><span><b>${esc(h.title)}</b><br><span class="muted small">${esc(h.cls)} · ${fds(h.given)}${h.due?' → '+fds(h.due):''} · ${tr('maxmark')} ${esc(h.max)}${hwInfo(h)}</span></span><span class="pill ${n&&n===sts.length?'ok':'warn'}">${n}/${sts.length}</span></div>${body}</div>`}).join(''):`<div class="empty" style="margin-top:10px">${tr('noasg')}</div>`;
   return `<div class="panel"><h2>📝 ${tr('homework')}</h2>${f}</div>${list}`;
 }
 /* ---------- assessment ---------- */
@@ -521,6 +517,180 @@ async function saveBlob(name,blob){
   catch(e){if(e&&e.name==='AbortError')return}
   const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);
 }
+/* ---------- homework location/week + correction report (standalone) ---------- */
+Object.assign(T,{
+ corr:['Correction Report','تقرير التصحيح'],
+ w_sb:['Student Book','كتاب الطالب'],w_bk:['Booklet','البوكلت'],w_as:['Assessment','الأسسمنت'],w_ex:['External sheet','شيت خارجي'],w_ot:['Other','أخرى'],
+ wherecorr:['Where is the work?','مكان الواجب'],w_other_ph:['Specify where','اكتبي المكان'],weekno:['Week no.','رقم الأسبوع'],
+ cd_new:['New correction record','تسجيل تصحيح جديد'],cd_what:['What I corrected','اللي صححته'],cd_hw:['Linked homework (optional)','الواجب المرتبط (اختياري)'],
+ cd_abs:['Absent','غائبون'],cd_nob:['Did not bring the book / homework','لم يحضروا الكتاب / الواجب'],cd_nos:['No supplies','بدون أدوات'],
+ cd_n:['Books corrected','عدد الكتب المصححة'],cd_comment:['Comment','تعليق'],cd_save:['Save record','حفظ التسجيل'],cd_hist:['Correction history','سجل التصحيح'],
+ cd_none:['No records yet.','لا توجد تسجيلات بعد.'],cd_fromatt:['Pulled from the attendance record. Tap a name to change.','مسحوبة من سجل الحضور. اضغطي على اسم للتعديل.'],
+ cd_noatt:['No attendance recorded for this day. Choose manually.','لا يوجد حضور مسجّل لهذا اليوم. اختاري يدويًا.'],
+ cd_pickwhat:['Choose what you corrected.','اختاري اللي صححتيه.'],cd_filter:['Check a student','اسألي عن طالب'],cd_all:['All students','كل الطلاب'],
+ books:['books','كتاب'],cd_size:['Class size','عدد الفصل'],cd_auto:['auto','تلقائي'],
+ cd_s_abs:['was ABSENT that day','كان غائبًا ذلك اليوم'],cd_s_nob:['did NOT bring the book / homework','لم يحضر الكتاب / الواجب'],cd_s_nos:['had NO supplies','لم يحضر الأدوات'],cd_s_ok:['was not listed absent or missing','غير مسجّل كغائب أو ناقص'],
+ hwlink_none:['– none –','– بدون –']
+});
+NAV.splice(5,0,['corr','🧾']);
+const WH=['sb','bk','as','ex','ot'];
+const whereLbl=h=>h&&h.where?(h.where==='ot'&&h.other?tr('w_ot')+': '+h.other:tr('w_'+h.where)):'';
+const whereOpts=cur=>'<option value="">–</option>'+WH.map(k=>`<option value="${k}"${cur===k?' selected':''}>${tr('w_'+k)}</option>`).join('');
+const hwInfo=h=>(whereLbl(h)?' · 📍 '+esc(whereLbl(h)):'')+(h.wkn?' · '+tr('week')+' '+esc(h.wkn):'');
+const hwEdit=h=>`<div class="form"><div><label>${tr('wherecorr')}</label><select data-act="hw-f" data-h="${h.id}" data-k="where">${whereOpts(h.where||'')}</select></div>${h.where==='ot'?`<div><label>${tr('w_other_ph')}</label><input data-act="hw-f" data-h="${h.id}" data-k="other" value="${esc(h.other||'')}"></div>`:''}<div><label>${tr('weekno')}</label><input type="number" min="1" data-act="hw-f" data-h="${h.id}" data-k="wkn" value="${esc(h.wkn==null?'':h.wkn)}"></div></div>`;
+
+(function(){const s=document.createElement('style');s.textContent=`.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:.88rem}.chip.on{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}.chip.bad.on{background:var(--bad);border-color:var(--bad);color:#fff}.chip.warn.on{background:var(--warn);border-color:var(--warn);color:#fff}.cdg{margin-top:14px}.cdh{display:flex;gap:8px;align-items:center;margin-bottom:6px;flex-wrap:wrap}.cdl{margin-top:4px;font-size:.9rem}`;document.head.appendChild(s)})();
+
+/* ----- correction report ----- */
+let cd=null,cstu='';
+const cdNew=()=>({date:today(),cls:fc,what:[],other:'',hw:'',abs:null,nob:null,nos:null,n:'',comment:''});
+const cdAtt=()=>D['att_'+cd.cls+'_'+cd.date];
+const cdAuto={
+  abs:()=>{const a=cdAtt();return students(cd.cls).filter(s=>a&&a.r&&a.r[s.id]==='a').map(s=>s.id)},
+  nos:()=>{const a=cdAtt();return students(cd.cls).filter(s=>a&&a.s&&a.s[s.id]===0).map(s=>s.id)},
+  nob:()=>{const r=cd.hw&&D['hwr_'+cd.hw]&&D['hwr_'+cd.hw].r;return students(cd.cls).filter(s=>r&&r[s.id]&&(r[s.id].s==='missing'||r[s.id].s==='nohw')).map(s=>s.id)}
+};
+const cdGet=g=>cd[g]||cdAuto[g]();
+const nmList=(ids,c)=>ids.map(i=>esc((D[i]&&D[i].name)||(c.nm&&c.nm[i])||'?')).join(', ');
+const nmPlain=(ids,c)=>ids.map(i=>(D[i]&&D[i].name)||(c.nm&&c.nm[i])||'?').join(', ');
+const whatLbl=c=>(c.what||[]).map(k=>k==='ot'&&c.other?tr('w_ot')+': '+c.other:tr('w_'+k)).join(' + ');
+function vCor(){
+  const cl=classes();if(!cl.length)return needCls();
+  if(!cd)cd=cdNew();if(!cl.some(c=>c.code===cd.cls))cd.cls=cl[0].code;
+  const sts=students(cd.cls),hws=all('hw').filter(h=>h.cls===cd.cls).sort((a,b)=>b.given.localeCompare(a.given));
+  const hasAtt=!!cdAtt();
+  const grp=(g,tone,hint)=>{const ids=cdGet(g);return `<div class="cdg"><div class="cdh"><b>${tr('cd_'+g)}</b><span class="pill ${ids.length?tone:''}">${ids.length}</span></div>${hint?`<div class="small muted" style="margin-bottom:6px">${hint}</div>`:''}<div class="chips">${sts.map(s=>`<button type="button" class="chip ${tone}${ids.indexOf(s.id)>=0?' on':''}" data-act="cd-tog" data-g="${g}" data-s="${s.id}">${esc(s.name)}</button>`).join('')}</div></div>`};
+  const nAuto=sts.length-cdGet('abs').length;
+  const form=`<div class="form"><div><label for="cd-date">${tr('date')}</label><input id="cd-date" type="date" value="${cd.date}" data-act="cd-sel" data-k="date"></div><div><label for="cd-cls">${tr('cls')}</label><select id="cd-cls" data-act="cd-sel" data-k="cls">${clsOpts(cd.cls)}</select></div><div><label for="cd-hw">${tr('cd_hw')}</label><select id="cd-hw" data-act="cd-sel" data-k="hw"><option value="">${tr('hwlink_none')}</option>${hws.map(h=>`<option value="${h.id}"${cd.hw===h.id?' selected':''}>${esc(h.title)}${h.wkn?' ('+tr('week')+' '+esc(h.wkn)+')':''}</option>`).join('')}</select></div></div>
+<div class="cdh"><b>${tr('cd_what')}</b></div><div class="chips">${WH.map(k=>`<button type="button" class="chip${cd.what.indexOf(k)>=0?' on':''}" data-act="cd-what" data-k="${k}">${tr('w_'+k)}</button>`).join('')}</div>
+${cd.what.indexOf('ot')>=0?`<div style="margin-top:8px"><input data-act="cd-txt" data-k="other" value="${esc(cd.other)}" placeholder="${tr('w_other_ph')}" aria-label="${tr('w_other_ph')}"></div>`:''}
+${sts.length?grp('abs','bad',hasAtt?tr('cd_fromatt'):tr('cd_noatt'))+grp('nob','warn','')+grp('nos','warn',hasAtt?tr('cd_fromatt'):'')
+ +`<div class="form" style="margin-top:14px"><div><label for="cd-n">${tr('cd_n')} (${tr('cd_size')} ${sts.length} · ${tr('cd_auto')} ${nAuto})</label><input id="cd-n" type="number" min="0" data-act="cd-txt" data-k="n" value="${esc(cd.n)}" placeholder="${nAuto}"></div></div>`
+ :`<div class="empty" style="margin-top:12px">${tr('needstu')}</div>`}
+<div style="margin-top:8px"><label for="cd-c">${tr('cd_comment')}</label><textarea id="cd-c" data-act="cd-txt" data-k="comment">${esc(cd.comment)}</textarea></div>
+<div style="margin-top:10px"><button class="btn pri" data-act="cd-save">${tr('cd_save')}</button></div>`;
+  /* history */
+  const st=cstu&&D[cstu]?D[cstu]:null;
+  const stuOpts=`<option value="">${tr('cd_all')}</option>`+classes().map(c=>`<optgroup label="${esc(c.code)}">${students(c.code).map(s=>`<option value="${s.id}"${cstu===s.id?' selected':''}>${esc(s.name)}</option>`).join('')}</optgroup>`).join('');
+  let recs=all('cor').sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.at||0)-(a.at||0));
+  if(st)recs=recs.filter(c=>c.cls===st.cls);
+  const cards=recs.length?recs.map(c=>{
+    const ab=c.abs||[],nb=c.nob||[],ns=c.nos||[];
+    let who='';
+    if(st){const k=ab.indexOf(st.id)>=0?'abs':nb.indexOf(st.id)>=0?'nob':ns.indexOf(st.id)>=0?'nos':'ok';who=`<div class="cdl"><span class="pill ${k==='ok'?'ok':'bad'}">${esc(st.name)} ${tr('cd_s_'+k)}</span></div>`}
+    return `<div class="panel" style="margin-top:10px"><div class="ph2"><span><b>${fdt(c.date)}</b> · ${esc(c.cls)}<br><span class="muted small">${esc(whatLbl(c))}${c.hwt?' · '+esc(c.hwt):''}</span></span><span class="pill ok">${esc(c.n)} ${tr('books')}</span></div>${who}
+${ab.length?`<div class="cdl"><b>${tr('cd_abs')} (${ab.length}):</b> ${nmList(ab,c)}</div>`:''}${nb.length?`<div class="cdl"><b>${tr('cd_nob')} (${nb.length}):</b> ${nmList(nb,c)}</div>`:''}${ns.length?`<div class="cdl"><b>${tr('cd_nos')} (${ns.length}):</b> ${nmList(ns,c)}</div>`:''}${c.comment?`<div class="cdl rtext" style="white-space:pre-wrap">💬 ${esc(c.comment)}</div>`:''}
+<div class="row" style="margin-top:8px"><button class="btn sm" data-act="cd-copy" data-id="${c.id}">${tr('copy')}</button>${delBtn('del-cor',c.id)}</div></div>`}).join(''):`<div class="empty" style="margin-top:10px">${tr('cd_none')}</div>`;
+  return `<div class="panel"><h2>🧾 ${tr('corr')}</h2>${form}</div>
+<div class="panel" style="margin-top:14px"><h2>📚 ${tr('cd_hist')}</h2><div class="form"><div><label for="cd-stu">${tr('cd_filter')}</label><select id="cd-stu" data-act="cd-sel" data-k="stu">${stuOpts}</select></div></div></div>${cards}`;
+}
+function cdText(c){
+  const L2=[`${fdt(c.date)} · ${c.cls}`,whatLbl(c)+(c.hwt?' · '+c.hwt:''),`${tr('cd_n')}: ${c.n}`];
+  if((c.abs||[]).length)L2.push(`${tr('cd_abs')} (${c.abs.length}): ${nmPlain(c.abs,c)}`);
+  if((c.nob||[]).length)L2.push(`${tr('cd_nob')} (${c.nob.length}): ${nmPlain(c.nob,c)}`);
+  if((c.nos||[]).length)L2.push(`${tr('cd_nos')} (${c.nos.length}): ${nmPlain(c.nos,c)}`);
+  if(c.comment)L2.push(c.comment);
+  return L2.join('\n');
+}
+document.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-act^="cd-"]');if(!el||!cd&&el.dataset.act!=='cd-copy')return;
+  const a=el.dataset.act,d=el.dataset;
+  if(a==='cd-tog'){const cur=cdGet(d.g).slice(),i=cur.indexOf(d.s);if(i>=0)cur.splice(i,1);else cur.push(d.s);cd[d.g]=cur;
+    if(d.g!=='abs'&&!cd.abs)cd.abs=cdAuto.abs();if(d.g!=='nos'&&!cd.nos)cd.nos=cdAuto.nos();if(d.g!=='nob'&&!cd.nob)cd.nob=cdAuto.nob();return render()}
+  if(a==='cd-what'){const i=cd.what.indexOf(d.k);if(i>=0)cd.what.splice(i,1);else cd.what.push(d.k);return render()}
+  if(a==='cd-save'){
+    if(!cd.what.length){toast(tr('cd_pickwhat'));return}
+    const sts=students(cd.cls),abs=cdGet('abs'),nob=cdGet('nob'),nos=cdGet('nos'),nm={};
+    abs.concat(nob,nos).forEach(i=>{if(D[i])nm[i]=D[i].name});
+    const h=cd.hw&&D[cd.hw];
+    await add({t:'cor',cls:cd.cls,date:cd.date,what:cd.what.slice(),other:cd.other.trim(),hw:cd.hw||'',hwt:h?h.title:'',abs,nob,nos,nm,total:sts.length,n:nz(cd.n)!=null?nz(cd.n):Math.max(0,sts.length-abs.length),comment:cd.comment.trim()});
+    const c=cd.cls;cd=cdNew();cd.cls=c;toast(tr('saved'));render();return}
+  if(a==='cd-copy'){const c=D[d.id];if(!c)return;const t=cdText(c);
+    try{await navigator.clipboard.writeText(t);toast(tr('copied'))}catch(x){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(tr('copied'))}catch(y){toast(tr('failsave'))}ta.remove()}return}
+});
+document.addEventListener('change',e=>{
+  const el=e.target,d=el.dataset;if(!d||!d.act)return;
+  if(d.act==='hw-where'){const w=document.getElementById('h-wo-wrap');if(w)w.style.display=el.value==='ot'?'':'none';return}
+  if(d.act==='hw-f'&&col){let v=el.value.trim();if(d.k==='wkn')v=nz(v);patch(d.h,{},{[d.k]:v});return}
+  if(d.act==='cd-sel'&&cd){
+    if(d.k==='stu'){cstu=el.value;return render()}
+    cd[d.k]=el.value||(d.k==='date'?today():'');
+    if(d.k==='date'||d.k==='cls'){cd.abs=cd.nos=cd.nob=null;if(d.k==='cls')cd.hw=''}
+    if(d.k==='hw')cd.nob=null;
+    return render();
+  }
+});
+document.addEventListener('input',e=>{const el=e.target,d=el.dataset;if(d&&d.act==='cd-txt'&&cd)cd[d.k]=el.value});
+/* ---------- playful look: fonts, themes, photo shape/size, hearts ---------- */
+Object.assign(T,{
+ look:['Look & feel','الشكل والألوان'],lk_font:['Font','الخط'],lk_theme:['Colors','الألوان'],lk_shape:['Photo shape','شكل الصورة'],lk_size:['Photo size','حجم الصورة'],lk_hearts:['Hearts background','خلفية القلوب'],
+ lk_on:['On','شغّال'],lk_off:['Off','مقفول'],lk_s_circle:['Circle','دائرة'],lk_s_heart:['Heart','قلب'],lk_s_flower:['Flower','وردة'],lk_s_soft:['Soft square','مربع ناعم'],
+ lk_z_m:['Medium','وسط'],lk_z_l:['Big','كبيرة'],lk_z_xl:['Bigger','أكبر'],
+ th_candy:['Candy pink','وردي حلو'],th_lilac:['Lilac','ليلكي'],th_sunny:['Sunny','مشمس'],th_mint:['Mint','نعناع']
+});
+const FONTS={
+ mali:['Mali','Mali','Baloo Bhaijaan 2','15px'],
+ gaegu:['Gaegu','Gaegu','Baloo Bhaijaan 2','18px'],
+ patrick:['Patrick Hand','Patrick Hand','Baloo Bhaijaan 2','17px'],
+ baloo:['Baloo','Baloo 2','Baloo Bhaijaan 2','15.5px'],
+ classic:['Classic','Fredoka','Cairo','15px']
+};
+const THEMES={
+ candy:{c:'#ff8fc8','--bg':'#fff5fb','--bgimg':'linear-gradient(135deg,#fff3fa 0%,#f3eeff 50%,#fff0f6 100%)','--accent':'#c2377f','--accent-fg':'#fff','--pink':'#ff5fa2','--side1':'#ffd3ec','--side2':'#e4d2ff','--side-fg':'#5a2a7a','--side-hover':'rgba(255,255,255,.55)','--line':'#f1d9ec','--muted':'#7d5a8f','--c0':'#ffd9e6','--c1':'#fff0c4','--c2':'#c9f0e6','--c3':'#ead9ff'},
+ lilac:{c:'#9b6fe0','--bg':'#f7f2ff','--bgimg':'linear-gradient(135deg,#faf6ff 0%,#eef2ff 45%,#fdf0fa 100%)','--accent':'#7c3fbf','--accent-fg':'#fff','--pink':'#e0568f','--side1':'#e8dbff','--side2':'#d4c2f7','--side-fg':'#4a2a80','--side-hover':'rgba(255,255,255,.55)','--line':'#e2d9f5','--muted':'#6d5f8f','--c0':'#ffd9e6','--c1':'#fff0c4','--c2':'#c9f0e6','--c3':'#e4d8fc'},
+ sunny:{c:'#ffc233','--bg':'#fffaf0','--bgimg':'linear-gradient(135deg,#fffbea 0%,#fff2f0 55%,#fff7e0 100%)','--accent':'#b45309','--accent-fg':'#fff','--pink':'#ff7a59','--side1':'#ffe9a8','--side2':'#ffd0b0','--side-fg':'#6b3a00','--side-hover':'rgba(255,255,255,.55)','--line':'#f5e3c2','--muted':'#8a6a3a','--c0':'#ffd9cf','--c1':'#fff0b8','--c2':'#d3f0d0','--c3':'#ffe3b8'},
+ mint:{c:'#4fd1b5','--bg':'#f1fffb','--bgimg':'linear-gradient(135deg,#f0fffa 0%,#eef6ff 55%,#fff0f8 100%)','--accent':'#0f8f78','--accent-fg':'#fff','--pink':'#ff8fb8','--side1':'#c9f5e6','--side2':'#cfe3ff','--side-fg':'#0b4f55','--side-hover':'rgba(255,255,255,.55)','--line':'#cfeee5','--muted':'#4f7a78','--c0':'#ffdbe8','--c1':'#fff3c8','--c2':'#c9f0e6','--c3':'#d9e6ff'}
+};
+const HEARTS="url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='%23ff6fb0' fill-opacity='.17'%3E%3Cpath id='h' d='M20 34c-9-7-14-12-14-18a8 8 0 0 1 14-5 8 8 0 0 1 14 5c0 6-5 11-14 18z'/%3E%3Cpath transform='translate(104 70) scale(.7)' d='M20 34c-9-7-14-12-14-18a8 8 0 0 1 14-5 8 8 0 0 1 14 5c0 6-5 11-14 18z'/%3E%3Cpath transform='translate(40 112) scale(.5)' d='M20 34c-9-7-14-12-14-18a8 8 0 0 1 14-5 8 8 0 0 1 14 5c0 6-5 11-14 18z'/%3E%3Cpath transform='translate(118 6) scale(.45)' d='M20 34c-9-7-14-12-14-18a8 8 0 0 1 14-5 8 8 0 0 1 14 5c0 6-5 11-14 18z'/%3E%3C/g%3E%3Cg fill='%23ffc233' fill-opacity='.25'%3E%3Cpath transform='translate(82 22)' d='M8 0l2.2 5.3 5.8.5-4.4 3.8 1.4 5.6L8 12l-5 3.2 1.4-5.6L0 5.8l5.8-.5z'/%3E%3Cpath transform='translate(146 126) scale(.8)' d='M8 0l2.2 5.3 5.8.5-4.4 3.8 1.4 5.6L8 12l-5 3.2 1.4-5.6L0 5.8l5.8-.5z'/%3E%3C/g%3E%3C/svg%3E\")";
+const MASKS={
+ heart:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 29.6'%3E%3Cpath d='M23.6 0c-3.4 0-6.3 2.7-7.6 5.6C14.7 2.7 11.8 0 8.4 0 3.8 0 0 3.8 0 8.4c0 9.4 9.5 11.9 16 21.2 6.1-9.3 16-12.1 16-21.2C32 3.8 28.2 0 23.6 0z'/%3E%3C/svg%3E\")",
+ flower:"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='30'/%3E%3Ccircle cx='50' cy='20' r='19'/%3E%3Ccircle cx='50' cy='80' r='19'/%3E%3Ccircle cx='20' cy='50' r='19'/%3E%3Ccircle cx='80' cy='50' r='19'/%3E%3Ccircle cx='29' cy='29' r='19'/%3E%3Ccircle cx='71' cy='29' r='19'/%3E%3Ccircle cx='29' cy='71' r='19'/%3E%3Ccircle cx='71' cy='71' r='19'/%3E%3C/svg%3E\")"
+};
+const PH={m:'120px',l:'160px',xl:'200px'};
+(function(){const s=document.createElement('style');s.textContent=`
+body{font-size:var(--fs,15px);background-image:var(--hearts,none),var(--bgimg);background-attachment:fixed}
+.side button:hover:not(.on){background:var(--side-hover,rgba(255,255,255,.12))}
+.side .brand{box-shadow:0 2px 8px rgba(120,60,140,.15)}
+.panel{border-radius:24px;border:2px solid var(--line)}
+.btn,.tabs button,.chip{border-radius:99px}
+.btn.pri,.btn.pink{box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.hero{border-radius:28px;position:relative;overflow:hidden;gap:18px;padding:18px 20px}
+.hero:before{content:"💖 ✨ 💗";position:absolute;inset-block-start:6px;inset-inline-end:16px;opacity:.55;font-size:1.1rem;letter-spacing:4px}
+.hero h1{font-size:2.3rem}
+.hero img.ph{width:var(--ph,160px);height:var(--ph,160px);object-fit:cover;flex:none;border-radius:50%;border:4px solid #fff;box-shadow:0 4px 12px rgba(150,60,140,.25)}
+[data-shape="soft"] .hero img.ph{border-radius:28%}
+[data-shape="heart"] .hero img.ph,[data-shape="flower"] .hero img.ph{border:0;box-shadow:none;border-radius:0;-webkit-mask:var(--mask) center/contain no-repeat;mask:var(--mask) center/contain no-repeat;background:#fff}
+[data-shape="heart"] .hero img.ph{height:calc(var(--ph,160px)*.93)}
+.hello{border-radius:99px}
+.rpage{font-family:'Fredoka','Cairo',system-ui,sans-serif}
+.lkrow{margin-top:12px}.lkrow>b{display:block;margin-bottom:6px}
+.chip .dot{display:inline-block;width:.9em;height:.9em;border-radius:50%;vertical-align:-.1em;margin-inline-end:6px;border:1px solid rgba(0,0,0,.15)}
+@media (max-width:860px){.hero img.ph{width:min(var(--ph,160px),34vw);height:min(var(--ph,160px),34vw)}[data-shape="heart"] .hero img.ph{height:calc(min(var(--ph,160px),34vw)*.93)}}
+`;document.head.appendChild(s)})();
+function applyLook(){
+  const r=document.documentElement.style,th=THEMES[cfg.theme]||THEMES.candy,f=FONTS[cfg.font]||FONTS.mali;
+  for(const k in th)if(k.indexOf('--')===0)r.setProperty(k,th[k]);
+  r.setProperty('--font',`'${f[1]}','${f[2]}',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif`);
+  r.setProperty('--fs',f[3]);
+  r.setProperty('--ph',PH[cfg.ph]||PH.l);
+  r.setProperty('--hearts',cfg.hearts==='0'?'none':HEARTS);
+  const sh=cfg.shape||'heart';document.body.dataset.shape=sh==='circle'?'':sh;
+  if(MASKS[sh])r.setProperty('--mask',MASKS[sh]);
+}
+function lookPanel(){
+  const cur={font:cfg.font||'mali',theme:cfg.theme||'candy',shape:cfg.shape||'heart',ph:cfg.ph||'l',hearts:cfg.hearts||'1'};
+  const row=(k,label,items)=>`<div class="lkrow"><b>${label}</b><div class="chips">${items.map(([v,l,st])=>`<button type="button" class="chip${cur[k]===v?' on':''}" data-act="lk-set" data-k="${k}" data-v="${v}"${st?` style="${st}"`:''}>${l}</button>`).join('')}</div></div>`;
+  return `<h3 style="margin:14px 0 4px">💖 ${tr('look')}</h3>`
+   +row('font',tr('lk_font'),Object.keys(FONTS).map(k=>[k,'Aa أب',`font-family:'${FONTS[k][1]}','${FONTS[k][2]}';font-size:1.1rem`]).map((x,i)=>[x[0],FONTS[x[0]][0]+' · Aa أب',x[2]]))
+   +row('theme',tr('lk_theme'),Object.keys(THEMES).map(k=>[k,`<span class="dot" style="background:${THEMES[k].c}"></span>${tr('th_'+k)}`]))
+   +row('shape',tr('lk_shape'),[['heart',tr('lk_s_heart')+' 💗'],['circle',tr('lk_s_circle')],['flower',tr('lk_s_flower')+' 🌸'],['soft',tr('lk_s_soft')]])
+   +row('ph',tr('lk_size'),[['m',tr('lk_z_m')],['l',tr('lk_z_l')],['xl',tr('lk_z_xl')]])
+   +row('hearts',tr('lk_hearts'),[['1',tr('lk_on')],['0',tr('lk_off')]]);
+}
+document.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-act="lk-set"]');if(!el||!col)return;
+  const k=el.dataset.k,v=el.dataset.v;cfg[k]=v;await patch('cfg',{t:'cfg'},{[k]:v});render();
+});
 /* ---------- settings ---------- */
 function vSet(){
   const dn=dayNames(),cl=classes();
@@ -531,10 +701,10 @@ function vSet(){
 <div><label for="s-term">${tr('termname')}</label><input id="s-term" value="${esc(cfg.term)}" data-act="cfg" data-k="term"></div>
 <div><label for="s-start">${tr('termstart')}</label><input id="s-start" type="date" value="${esc(cfg.start)}" data-act="cfg" data-k="start"></div>
 <div><label for="s-weeks">${tr('weeks')}</label><input id="s-weeks" type="number" value="${esc(cfg.weeks)}" data-act="cfg" data-k="weeks"></div></div>
-<h3 style="margin:10px 0 6px">${tr('timetable')}</h3>${cl.length?tt:needCls()}<p class="muted small">${tr('data')}</p><button class="btn" data-act="logout">${L()?'تسجيل الخروج':'Log out'}</button></div>`;
+${lookPanel()}<h3 style="margin:10px 0 6px">${tr('timetable')}</h3>${cl.length?tt:needCls()}<p class="muted small">${tr('data')}</p><button class="btn" data-act="logout">${L()?'تسجيل الخروج':'Log out'}</button></div>`;
 }
 /* ---------- render ---------- */
-function applyLang(){const a=$('#app');a.dir=cfg.lang==='ar'?'rtl':'ltr';document.documentElement.lang=cfg.lang}
+function applyLang(){const a=$('#app');a.dir=cfg.lang==='ar'?'rtl':'ltr';document.documentElement.lang=cfg.lang;applyLook()}
 function render(){
   applyLang();$('#app').classList.toggle('locked',!authed);
   if(fbFail){$('#view').innerHTML='<div class="empty">Could not load the app services. Check your internet connection and reload.<br>تعذر التحميل. تأكدي من الإنترنت وأعيدي فتح الصفحة.</div>';return}
@@ -546,7 +716,7 @@ function render(){
   const v=$('#view');
   if(!dbOk){v.innerHTML=`<div class="empty">${tr('signin')}</div>`;return}
   if(!loaded){v.innerHTML=`<div class="empty">${slow?tr('slow'):tr('loading')}</div>`;return}
-  v.innerHTML=({dashboard:vDash,classes:vClasses,students:vStudents,attendance:vAtt,homework:vHw,assessment:vAss,attitude:vAtd,office:vOff,reports:vRep,settings:vSet})[view]();
+  v.innerHTML=({dashboard:vDash,classes:vClasses,students:vStudents,attendance:vAtt,homework:vHw,assessment:vAss,attitude:vAtd,office:vOff,corr:vCor,reports:vRep,settings:vSet})[view]();
   afterRender();
 }
 const val=id=>{const e=$('#'+id);return e?e.value.trim():''};
@@ -569,7 +739,7 @@ document.addEventListener('click',async e=>{
   if(a==='att-set'){await patch('att_'+fc+'_'+fdate,{t:'att',cls:fc,date:fdate,r:{},s:{}},{r:{[d.s]:d.v}});return}
   if(a==='sup-set'){await patch('att_'+fc+'_'+fdate,{t:'att',cls:fc,date:fdate,r:{},s:{}},{s:{[d.s]:+d.v}});return}
   if(a==='att-all'){const r={};students(fc).forEach(s=>r[s.id]='p');await patch('att_'+fc+'_'+fdate,{t:'att',cls:fc,date:fdate,r:{},s:{}},{r});return}
-  if(a==='add-hw'){const t=val('h-t');if(!t){toast(tr('title'));return}fc=val('h-c')||fc;await add({t:'hw',title:t,cls:val('h-c'),given:val('h-g')||today(),due:val('h-d'),max:nz(val('h-m'))||10});return}
+  if(a==='add-hw'){const t=val('h-t');if(!t){toast(tr('title'));return}fc=val('h-c')||fc;await add({t:'hw',title:t,cls:val('h-c'),given:val('h-g')||today(),due:val('h-d'),max:nz(val('h-m'))||10,where:val('h-w'),other:val('h-wo'),wkn:nz(val('h-k'))});return}
   if(a==='hw-set'){await patch('hwr_'+d.h,{t:'hwr',hid:d.h,r:{}},{r:{[d.s]:{s:d.v}}});return}
   if(a==='add-ass'){const t=val('a-t');if(!t){toast(tr('title'));return}fc=val('a-c')||fc;await add({t:'as',title:t,cls:val('a-c'),date:val('a-d')||today(),max:nz(val('a-m'))||20});return}
   if(a==='atd-set'){await patch('atd_'+fc+'_'+fdate,{t:'atd',cls:fc,date:fdate,r:{}},{r:{[d.s]:+d.v}});return}
@@ -584,7 +754,7 @@ document.addEventListener('click',async e=>{
   if(a.indexOf('del-')===0){
     if(conf!==a+id){conf=a+id;return render()}
     conf=null;let ids=[id];
-    if(a==='del-cls'){const c=D[id].code;all('s').filter(x=>x.cls===c).forEach(x=>ids.push(x.id,'cm_'+x.id));all('att').filter(x=>x.cls===c).forEach(x=>ids.push(x.id));all('atd').filter(x=>x.cls===c).forEach(x=>ids.push(x.id));all('oh').filter(x=>x.cls===c).forEach(x=>ids.push(x.id));all('hw').filter(x=>x.cls===c).forEach(x=>ids.push(x.id,'hwr_'+x.id));all('as').filter(x=>x.cls===c).forEach(x=>ids.push(x.id,'asr_'+x.id))}
+    if(a==='del-cls'){const c=D[id].code;all('cor').filter(x=>x.cls===c).forEach(x=>ids.push(x.id));all('s').filter(x=>x.cls===c).forEach(x=>ids.push(x.id,'cm_'+x.id));all('att').filter(x=>x.cls===c).forEach(x=>ids.push(x.id));all('atd').filter(x=>x.cls===c).forEach(x=>ids.push(x.id));all('oh').filter(x=>x.cls===c).forEach(x=>ids.push(x.id));all('hw').filter(x=>x.cls===c).forEach(x=>ids.push(x.id,'hwr_'+x.id));all('as').filter(x=>x.cls===c).forEach(x=>ids.push(x.id,'asr_'+x.id))}
     if(a==='del-stu')ids.push('cm_'+id);
     if(a==='del-hw')ids.push('hwr_'+id);
     if(a==='del-ass')ids.push('asr_'+id);
