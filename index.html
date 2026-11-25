@@ -262,7 +262,7 @@ async function remove(ids){for(const i of ids){try{await col.doc(i).delete()}cat
 /* ---------- metrics ---------- */
 const HWPTS={complete:100,late:75,incomplete:50,missing:0,nobook:0};
 function metrics(sid,code,w1,w2){
-  const m={attTot:0,attP:0,supTot:0,supY:0,hwN:0,hwSub:0,hwOn:0,hwPts:[],asList:[],asAbs:[],hwNoBook:0,hwNotDone:0,atd:[],ohTot:0,ohP:0,weeks:{}};
+  const m={attTot:0,attP:0,supTot:0,supY:0,hwN:0,hwSub:0,hwOn:0,hwPts:[],asList:[],asAbs:[],hwNoBook:0,hwNotDone:0,supMiss:{},atd:[],ohTot:0,ohP:0,weeks:{}};
   const wk=(d,v)=>{if(v==null)return;const w=weekOf(d);(m.weeks[w]=m.weeks[w]||[]).push(v)};const inR=w=>(!w1||w>=w1)&&(!w2||w<=w2),wkw=(w,v)=>{if(v==null)return;(m.weeks[w]=m.weeks[w]||[]).push(v)};
   all('att').filter(a=>a.cls===code&&inR(weekOf(a.date))).forEach(a=>{
     const r=a.r&&a.r[sid];if(r){m.attTot++;if(r==='p'||r==='l')m.attP++}
@@ -278,8 +278,8 @@ function metrics(sid,code,w1,w2){
     const p=P(v,nz(a.max)||10);m.asList.push({a,v,p});wk(a.date,p);
   });
   all('atd').filter(a=>a.cls===code&&inR(weekOf(a.date))).forEach(a=>{const v=nz(a.r&&a.r[sid]);if(v!=null)m.atd.push(v)});
-  all('oh').filter(o=>o.cls===code&&inR(weekOf(o.date))).forEach(o=>{const r=o.r&&o.r[sid];if(r){m.ohTot++;if(r==='p')m.ohP++}});
-  m.att=P(m.attP,m.attTot);m.sup=P(m.supY,m.supTot);
+  all('oh').filter(o=>(o.inv?o.inv.indexOf(sid)>=0:o.cls===code)&&inR(weekOf(o.date))).forEach(o=>{const r=o.r&&o.r[sid];if(r){m.ohTot++;if(r==='p')m.ohP++}});
+  all('sup').filter(x=>x.cls===code&&inR(weekOf(x.date))).forEach(x=>{const r=x.r&&x.r[sid];if(Array.isArray(r)){m.supTot++;if(!r.length)m.supY++;else r.forEach(k=>{m.supMiss[k]=(m.supMiss[k]||0)+1})}});m.att=P(m.attP,m.attTot);m.sup=P(m.supY,m.supTot);
   m.hw=rd(avgOf(m.hwPts));m.hwSubP=P(m.hwSub,m.hwN);m.hwOnP=P(m.hwOn,m.hwN);
   m.as=rd(avgOf(m.asList.map(x=>x.p)));
   const av=avgOf(m.atd);m.atdAvg=av==null?null:Math.round(av*10)/10;m.atdP=av==null?null:Math.round(av/5*100);
@@ -374,8 +374,8 @@ function vAtt(){
   const bar=clsDateBar(),sts=students(fc);if(!sts.length)return `<div class="panel">${bar}<div class="empty">${tr('needstu')}</div></div>`;
   const id='att_'+fc+'_'+fdate,d=D[id]||{r:{},s:{}};
   const lines=sts.map(s=>{const a=`data-act="att-set" data-s="${s.id}"`,b=`data-act="sup-set" data-s="${s.id}"`;
-    return `<div class="line"><span class="nm">${esc(s.name)}</span>${seg([['p',tr('present'),'ok'],['l',tr('late'),'warn'],['a',tr('absent'),'bad']],d.r&&d.r[s.id],a)}${seg([[1,'🎒','ok'],[0,'✕','bad']],d.s&&d.s[s.id],b)}</div>`}).join('');
-  return `<div class="panel"><h2>✅ ${tr('attendance')} <button class="btn sm" data-act="att-all">${tr('markall')}</button></h2>${bar}<div class="small muted" style="margin-bottom:6px">🎒 = ${tr('brought')}</div>${lines}</div>`;
+    return `<div class="line"><span class="nm">${esc(s.name)}</span>${seg([['p',tr('present'),'ok'],['l',tr('late'),'warn'],['a',tr('absent'),'bad']],d.r&&d.r[s.id],a)}</div>`}).join('');
+  return `<div class="panel"><h2>✅ ${tr('attendance')} <button class="btn sm" data-act="att-all">${tr('markall')}</button></h2>${bar}${lines}</div>`;
 }
 /* ---------- homework ---------- */
 function vHw(){
@@ -461,7 +461,7 @@ function repPages(sid,rl){
   const p2=`<div class="rpage" dir="${dir}" lang="${rl}">${head}
 <div class="rrow"><div class="rbox" style="flex:1"><h3>📈 ${R('progress')}</h3>${chartSvg(m.series,+cfg.weeks||18,rl)}</div><div class="rbox" style="flex:1"><h3>🅰️ ${R('assdet')}</h3>${tbl}</div></div>
 <div class="rrow"><div class="rbox rring" style="flex:1">${ring(m.hw,84,'#2fa866')}<div style="flex:1"><h3>📝 ${R('hwrec')}</h3>${kv(R('ontime'),pc(m.hwOnP))}${kv(R('submitted'),pc(m.hwSubP))}${kv(R('notdone_l'),m.hwNotDone)}${kv(R('nobook_l'),m.hwNoBook)}</div></div><div class="rbox rring" style="flex:1">${ring(m.att,84,'#2f8fd6')}<div style="flex:1"><h3>🗓️ ${R('attrec')}</h3>${kv(R('totalses'),m.attTot)}${kv(R('attended'),m.attP)}${kv(R('absent'),m.attTot-m.attP)}</div></div></div>
-<div class="rrow"><div class="rbox rring" style="flex:1">${ring(m.sup,84,'#e8a21a')}<div style="flex:1"><h3>🎒 ${R('supc')}</h3>${kv(R('brought'),m.supY+' / '+m.supTot)}</div></div><div class="rbox rring" style="flex:1">${ring(m.atdP,84,'#e0568f')}<div style="flex:1"><h3>⭐ ${R('attitude')}</h3>${kv(R('avg'),m.atdAvg==null?'-':m.atdAvg+' / 5')}${kv(R('ohrec'),m.ohP+' / '+m.ohTot)}</div></div></div>
+<div class="rrow"><div class="rbox rring" style="flex:1">${ring(m.sup,84,'#e8a21a')}<div style="flex:1"><h3>🎒 ${R('supc')}</h3>${kv(R('brought'),m.supY+' / '+m.supTot)}${Object.keys(m.supMiss).length?kv(R('sp_miss'),Object.keys(m.supMiss).map(k=>R('w_'+k)+' ×'+m.supMiss[k]).join(', ')):''}</div></div><div class="rbox rring" style="flex:1">${ring(m.atdP,84,'#e0568f')}<div style="flex:1"><h3>⭐ ${R('attitude')}</h3>${kv(R('avg'),m.atdAvg==null?'-':m.atdAvg+' / 5')}${kv(R('ohrec'),m.ohP+' / '+m.ohTot)}</div></div></div>
 <div class="rbox" style="background:#fff8dd"><h3>📝 ${R('detcom')}</h3>${txt(cm.det)}</div>${foot(2)}</div>`;
   return p1+p2;
 }
@@ -520,7 +520,7 @@ async function saveBlob(name,blob){
 /* ---------- homework location/week + correction report (standalone) ---------- */
 Object.assign(T,{
  corr:['Correction Report','تقرير التصحيح'],
- w_sb:['Student Book','كتاب الطالب'],w_bk:['Booklet','البوكلت'],w_as:['Assessment','الأسسمنت'],w_ex:['External sheet','شيت خارجي'],w_ot:['Other','أخرى'],
+ w_sb:['Student Book','كتاب الطالب'],w_bk:['Booklet','البوكلت'],w_as:['Assessment book','الأسسمنت بوك'],w_cb:['Copybook','كوبي بوك'],w_ex:['External sheet','شيت خارجي'],w_ot:['Other','أخرى'],
  wherecorr:['Where is the work?','مكان الواجب'],w_other_ph:['Specify where','اكتبي المكان'],weekno:['Week no.','رقم الأسبوع'],
  cd_new:['New correction record','تسجيل تصحيح جديد'],cd_what:['What I corrected','اللي صححته'],cd_hw:['Linked homework (optional)','الواجب المرتبط (اختياري)'],
  cd_abs:['Absent','غائبون'],cd_nob:['Did not bring the book / homework','لم يحضروا الكتاب / الواجب'],cd_nos:['No supplies','بدون أدوات'],
@@ -533,7 +533,7 @@ Object.assign(T,{
  editdet:['Edit details (changes apply to the marks automatically)','تعديل التفاصيل (النسب بتتحدث لوحدها)'],hwlink_none:['– none –','– بدون –']
 });
 NAV.splice(5,0,['corr','🧾']);
-const WH=['sb','bk','as','ex','ot'];
+const WH=['sb','bk','as','ex','cb','ot'];
 const whereLbl=h=>h&&h.where?(h.where==='ot'&&h.other?tr('w_ot')+': '+h.other:tr('w_'+h.where)):'';
 const whereOpts=cur=>'<option value="">–</option>'+WH.map(k=>`<option value="${k}"${cur===k?' selected':''}>${tr('w_'+k)}</option>`).join('');
 const hwInfo=h=>(whereLbl(h)?' · 📍 '+esc(whereLbl(h)):'')+(h.wkn?' · '+tr('week')+' '+esc(h.wkn):'');
@@ -549,7 +549,7 @@ const cdNew=()=>({date:today(),cls:fc,what:[],other:'',hw:'',abs:null,nob:null,n
 const cdAtt=()=>D['att_'+cd.cls+'_'+cd.date];
 const cdAuto={
   abs:()=>{const a=cdAtt();return students(cd.cls).filter(s=>a&&a.r&&a.r[s.id]==='a').map(s=>s.id)},
-  nos:()=>{const a=cdAtt();return students(cd.cls).filter(s=>a&&a.s&&a.s[s.id]===0).map(s=>s.id)},
+  nos:()=>{const a=cdAtt(),sp=D['sup_'+cd.cls+'_'+cd.date],spr=sp&&sp.r;return students(cd.cls).filter(s=>(spr&&Array.isArray(spr[s.id])&&spr[s.id].length)||(a&&a.s&&a.s[s.id]===0)).map(s=>s.id)},
   nob:()=>{const r=cd.hw&&D['hwr_'+cd.hw]&&D['hwr_'+cd.hw].r;return students(cd.cls).filter(s=>r&&r[s.id]&&r[s.id].s==='nobook').map(s=>s.id)}
 };
 const cdGet=g=>cd[g]||cdAuto[g]();
@@ -566,7 +566,7 @@ function vCor(){
   const form=`<div class="form"><div><label for="cd-date">${tr('date')}</label><input id="cd-date" type="date" value="${cd.date}" data-act="cd-sel" data-k="date"></div><div><label for="cd-cls">${tr('cls')}</label><select id="cd-cls" data-act="cd-sel" data-k="cls">${clsOpts(cd.cls)}</select></div><div><label for="cd-hw">${tr('cd_hw')}</label><select id="cd-hw" data-act="cd-sel" data-k="hw"><option value="">${tr('hwlink_none')}</option>${hws.map(h=>`<option value="${h.id}"${cd.hw===h.id?' selected':''}>${esc(h.title)}${h.wkn?' ('+tr('week')+' '+esc(h.wkn)+')':''}</option>`).join('')}</select></div></div>
 <div class="cdh"><b>${tr('cd_what')}</b></div><div class="chips">${WH.map(k=>`<button type="button" class="chip${cd.what.indexOf(k)>=0?' on':''}" data-act="cd-what" data-k="${k}">${tr('w_'+k)}</button>`).join('')}</div>
 ${cd.what.indexOf('ot')>=0?`<div style="margin-top:8px"><input data-act="cd-txt" data-k="other" value="${esc(cd.other)}" placeholder="${tr('w_other_ph')}" aria-label="${tr('w_other_ph')}"></div>`:''}
-${sts.length?grp('abs','bad',hasAtt?tr('cd_fromatt'):tr('cd_noatt'))+grp('nob','warn','')+grp('nos','warn',hasAtt?tr('cd_fromatt'):'')
+${sts.length?grp('abs','bad',hasAtt?tr('cd_fromatt'):tr('cd_noatt'))+grp('nob','warn',tr('cd_nobhint'))+grp('nos','warn',hasAtt?tr('cd_fromatt'):'')
  +`<div class="form" style="margin-top:14px"><div><label for="cd-n">${tr('cd_n')} (${tr('cd_size')} ${sts.length} · ${tr('cd_auto')} ${nAuto})</label><input id="cd-n" type="number" min="0" data-act="cd-txt" data-k="n" value="${esc(cd.n)}" placeholder="${nAuto}"></div></div>`
  :`<div class="empty" style="margin-top:12px">${tr('needstu')}</div>`}
 <div style="margin-top:8px"><label for="cd-c">${tr('cd_comment')}</label><textarea id="cd-c" data-act="cd-txt" data-k="comment">${esc(cd.comment)}</textarea></div>
@@ -602,8 +602,10 @@ document.addEventListener('click',async e=>{
   if(a==='cd-what'){const i=cd.what.indexOf(d.k);if(i>=0)cd.what.splice(i,1);else cd.what.push(d.k);return render()}
   if(a==='cd-save'){
     if(!cd.what.length){toast(tr('cd_pickwhat'));return}
-    const sts=students(cd.cls),abs=cdGet('abs'),nob=cdGet('nob'),nos=cdGet('nos'),nm={};
+    const sts=students(cd.cls),abs=cdGet('abs'),nob=cdGet('nob'),nos0=cdGet('nos'),nos=[...new Set(nos0.concat(nob))],nm={};
     abs.concat(nob,nos).forEach(i=>{if(D[i])nm[i]=D[i].name});
+    const types=cd.what.filter(k=>k!=='ot');
+    if(nob.length&&types.length){const spd=D['sup_'+cd.cls+'_'+cd.date],r={};nob.forEach(i=>{const cur=((spd&&spd.r&&spd.r[i])||[]).slice();types.forEach(k=>{if(cur.indexOf(k)<0)cur.push(k)});r[i]=cur});await patch('sup_'+cd.cls+'_'+cd.date,{t:'sup',cls:cd.cls,date:cd.date,r:{}},{r})}
     const h=cd.hw&&D[cd.hw];
     await add({t:'cor',cls:cd.cls,date:cd.date,what:cd.what.slice(),other:cd.other.trim(),hw:cd.hw||'',hwt:h?h.title:'',abs,nob,nos,nm,total:sts.length,n:nz(cd.n)!=null?nz(cd.n):Math.max(0,sts.length-abs.length),comment:cd.comment.trim()});
     const c=cd.cls;cd=cdNew();cd.cls=c;toast(tr('saved'));render();return}
@@ -725,7 +727,7 @@ Object.assign(T,{
  im_go:['Import now','استيراد الآن'],im_cancel:['Cancel','إلغاء'],im_done:['Imported columns','تم استيراد أعمدة'],im_namecol:['Names column','عمود الأسماء'],
  im_defdate:['Default date for columns without one','التاريخ الافتراضي للأعمدة بدون تاريخ'],im_exists:['updates existing','تحديث موجود'],
  im_bad:['Could not read this file here. Paste the table instead.','تعذرت قراءة الملف هنا. الصقي الجدول بدلًا منه.'],im_empty:['No table found.','لم أجد جدولًا.'],im_wait:['Importing…','جاري الاستيراد…'],
- im_unmatched:['Names not found – choose a student or skip','أسماء غير موجودة – اختاري طالبًا أو تجاهلي'],im_sample:['Sample','عينة'],im_inc:['Import','استيراد'],
+ im_review:['Check each name below. Orange = please check or choose a student.','راجعي كل اسم. البرتقالي = راجعي أو اختاري الطالب.'],im_nomatch:['not found','غير موجود'],im_check:['please check','راجعي'],im_unmatched:['Names not found – choose a student or skip','أسماء غير موجودة – اختاري طالبًا أو تجاهلي'],im_sample:['Sample','عينة'],im_inc:['Import','استيراد'],
  g_hint_as:['Type a mark. A = absent (not counted). Empty = no mark. 0 = zero. Enter moves to the next student.','اكتبي الدرجة. A = غايب (لا يُحسب). فارغ = بدون درجة. 0 = صفر. Enter ينقلك للطالب التالي.'],
  g_hint_hw:['Choose the status for each student, then the mark if you want. Enter moves to the next student.','اختاري حالة كل طالب ثم الدرجة لو حابة. Enter ينقلك للطالب التالي.'],
  g_none:['Add a column first, then enter marks. Or import a sheet.','أضيفي عمودًا أولًا ثم أدخلي الدرجات. أو استوردي شيت.']
@@ -735,14 +737,17 @@ const newId=()=>'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,6
 const byD=k=>(a,b)=>String(a[k]||'').localeCompare(String(b[k]||''))||(a.at||0)-(b.at||0);
 const normN=s=>String(s==null?'':s).toLowerCase().replace(/[ً-ٟـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/[^\p{L}\p{N} ]/gu,' ').replace(/\s+/g,' ').trim();
 const sim=(a,b)=>{if(a===b)return 1;const m=a.length,n=b.length;if(!m||!n)return 0;let p=Array.from({length:n+1},(_,j)=>j);for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return 1-p[n]/Math.max(m,n)};
-function matchName(raw,sts){
-  const n=normN(raw);if(!n)return '';
-  const ex=sts.filter(s=>normN(s.name)===n);if(ex.length===1)return ex[0].id;
-  const ct=sts.filter(s=>{const t=normN(s.name);return Math.min(t.length,n.length)>=3&&(t.indexOf(n)>=0||n.indexOf(t)>=0)});if(ct.length===1)return ct[0].id;
+function matchName2(raw,sts){
+  const n=normN(raw);if(!n)return {id:'',exact:false};
+  const ex=sts.filter(s=>normN(s.name)===n);if(ex.length===1)return {id:ex[0].id,exact:true};
+  const tk=x=>x.split(' ').filter(Boolean),nt=tk(n);
+  const ct=sts.filter(s=>{const t=normN(s.name),tt=tk(t),a=nt.length<=tt.length?nt:tt,b=nt.length<=tt.length?tt:nt;return a.join('').length>=4&&a.every(w=>b.indexOf(w)>=0)});
+  if(ct.length===1)return {id:ct[0].id,exact:false};
   const sc=sts.map(s=>[sim(n,normN(s.name)),s.id]).sort((a,b)=>b[0]-a[0]);
-  if(sc.length&&sc[0][0]>=0.8&&(sc.length===1||sc[0][0]-sc[1][0]>=0.05))return sc[0][1];
-  return '';
+  if(sc.length&&sc[0][0]>=0.85&&(sc.length===1||sc[0][0]-sc[1][0]>=0.08))return {id:sc[0][1],exact:false};
+  return {id:'',exact:false};
 }
+const matchName=(raw,sts)=>matchName2(raw,sts).id;
 (function(){const s=document.createElement('style');s.textContent=`
 .gwrap{overflow:auto;max-height:72vh;border-radius:12px}
 table.g{border-collapse:separate;border-spacing:0;font-size:.9rem;min-width:100%}
@@ -919,8 +924,8 @@ function impCols(){
     const h=H[c]==null?'':H[c],p=parseHdr(h),hs=String(h).trim();
     imp.cols.push({c,inc:hs!==''&&!/^(total|average|avg|mean|%|no\.?|#|المجموع|المتوسط)/i.test(hs),title:p.title||('Column '+(c+1)),date:p.date||'',max:p.max==null?'':p.max,wkn:p.wkn||''});
   }
-  imp.map={};
-  imp.rows.slice(1).forEach((r,i)=>{const nm=String(r[imp.ncol]==null?'':r[imp.ncol]).trim();if(!nm||isTotalName(nm))return;imp.map[i]=matchName(nm,sts)});
+  imp.map={};imp.chk={};
+  imp.rows.slice(1).forEach((r,i)=>{const nm=String(r[imp.ncol]==null?'':r[imp.ncol]).trim();if(!nm||isTotalName(nm))return;const mr=matchName2(nm,sts);imp.map[i]=mr.id;imp.chk[i]=!!mr.id&&!mr.exact});
 }
 function impBuild(rows,kind){
   rows=rows.filter(r=>r.some(c=>String(c==null?'':c).trim()!==''));
@@ -936,9 +941,10 @@ function vImp(){
   const rowsI=Object.keys(imp.map).map(Number),matched=rowsI.filter(i=>imp.map[i]&&imp.map[i]!=='new'&&imp.map[i]!=='').length;
   const um=rowsI.filter(i=>!imp.map[i]||imp.map[i]==='');
   const stOpts=sel=>`<option value=""${sel===''?' selected':''}>${tr('im_skip')}</option><option value="new"${sel==='new'?' selected':''}>${tr('im_new')}</option>`+sts.map(s=>`<option value="${s.id}"${sel===s.id?' selected':''}>${esc(s.name)}</option>`).join('');
-  const umH=um.length?`<div class="small muted" style="margin:8px 0 4px">${tr('im_unmatched')}</div><table class="imt"><tbody>${um.map(i=>`<tr><td>${esc(imp.rows[i+1][imp.ncol])}</td><td><select data-act="im-m" data-r="${i}">${stOpts(imp.map[i]||'')}</select></td></tr>`).join('')}</tbody></table>`:'';
-  const exists=title=>all(imp.kind).some(x=>x.cls===fc&&String(x.title).toLowerCase()===String(title).trim().toLowerCase());
-  const cH=imp.cols.map((c,ci)=>`<tr><td><input type="checkbox" ${c.inc?'checked':''} data-act="im-c" data-k="inc" data-ci="${ci}" aria-label="${tr('im_inc')}"></td><td><input value="${esc(c.title)}" data-act="im-c" data-k="title" data-ci="${ci}"></td><td><input type="date" value="${esc(c.date)}" data-act="im-c" data-k="date" data-ci="${ci}"></td><td><input type="number" style="width:70px" value="${esc(c.max)}" placeholder="${as?20:10}" data-act="im-c" data-k="max" data-ci="${ci}"></td>${as?'':`<td><input type="number" style="width:60px" value="${esc(c.wkn)}" data-act="im-c" data-k="wkn" data-ci="${ci}"></td>`}<td class="small muted">${imp.rows.slice(1,4).map(r=>esc(r[c.c]==null?'':r[c.c])).join(' · ')}${exists(c.title)?` <span class="pill warn">${tr('im_exists')}</span>`:''}</td></tr>`).join('');
+  const umH=`<div class="small muted" style="margin:8px 0 4px">${tr('im_review')}</div><div class="tw" style="max-height:300px;overflow:auto"><table class="imt"><tbody>${rowsI.map(i=>{const v=imp.map[i]||'';return `<tr><td>${esc(imp.rows[i+1][imp.ncol])}</td><td><select data-act="im-m" data-r="${i}" style="${v===''?'background:var(--warnbg)':imp.chk[i]?'background:var(--c1)':''}">${stOpts(v)}</select></td><td>${v===''?`<span class="pill warn">${tr('im_nomatch')}</span>`:imp.chk[i]?`<span class="pill warn">${tr('im_check')}</span>`:'<span class="pill ok">✓</span>'}</td></tr>`}).join('')}</tbody></table></div>`;
+  const exists=c=>all(imp.kind).some(x=>x.cls===fc&&String(x.title).toLowerCase()===String(c.title).trim().toLowerCase()&&String(x[as?'date':'given'])===(c.date||imp.defDate));
+  const stat=c=>{let ok=0,bad=[];rowsI.forEach(i=>{if(!imp.map[i])return;const raw=imp.rows[i+1][c.c];if(raw===''||raw==null)return;const v=as?parseAs(raw):parseHw(raw);if(v===undefined)bad.push(String(raw));else ok++});return `<span class="pill ok">✓ ${ok}</span>`+(bad.length?` <span class="pill bad">⚠ ${bad.length}: ${esc(bad.slice(0,3).join(', '))}</span>`:'')};
+  const cH=imp.cols.map((c,ci)=>`<tr><td><input type="checkbox" ${c.inc?'checked':''} data-act="im-c" data-k="inc" data-ci="${ci}" aria-label="${tr('im_inc')}"></td><td><input value="${esc(c.title)}" data-act="im-c" data-k="title" data-ci="${ci}"></td><td><input type="date" value="${esc(c.date)}" data-act="im-c" data-k="date" data-ci="${ci}"></td><td><input type="number" style="width:70px" value="${esc(c.max)}" placeholder="${as?20:10}" data-act="im-c" data-k="max" data-ci="${ci}"></td>${as?'':`<td><input type="number" style="width:60px" value="${esc(c.wkn)}" data-act="im-c" data-k="wkn" data-ci="${ci}"></td>`}<td class="small muted">${imp.rows.slice(1,4).map(r=>esc(r[c.c]==null?'':r[c.c])).join(' · ')}${exists(c)?` <span class="pill warn">${tr('im_exists')}</span>`:''} ${stat(c)}</td></tr>`).join('');
   return `<div class="panel" style="margin-top:12px"><h2>⬆️ ${tr('imp')}</h2>
 <div class="form"><div><label for="im-nc">${tr('im_namecol')}</label><select id="im-nc" data-act="im-f" data-k="ncol">${Array.from({length:W},(_,c)=>`<option value="${c}"${c===imp.ncol?' selected':''}>${colL(c)} – ${esc(String(H[c]==null?'':H[c]).slice(0,18))}</option>`).join('')}</select></div><div><label for="im-dd">${tr('im_defdate')}</label><input id="im-dd" type="date" value="${esc(imp.defDate)}" data-act="im-f" data-k="defDate"></div></div>
 <div class="row"><span class="pill ${um.length?'warn':'ok'}">${matched}/${rowsI.length} ${tr('im_names')}</span><label style="display:flex;gap:6px;align-items:center;margin:0"><input type="checkbox" style="width:auto" ${imp.useOrder?'checked':''} data-act="im-f" data-k="useOrder"> ${tr('im_order')}</label></div>${umH}
@@ -957,7 +963,7 @@ async function impRun(){
   for(const c of imp.cols){
     if(!c.inc)continue;
     const title=String(c.title).trim()||('Column '+(c.c+1)),date=c.date||imp.defDate,max=nz(c.max)||(as?20:10);
-    const it=all(kind).find(x=>x.cls===fc&&String(x.title).toLowerCase()===title.toLowerCase());
+    const it=all(kind).find(x=>x.cls===fc&&String(x.title).toLowerCase()===title.toLowerCase()&&String(x[as?'date':'given'])===date);
     const id=it?it.id:newId();
     if(!it)await put(id,as?{t:'as',title,cls:fc,date,max}:{t:'hw',title,cls:fc,given:date,due:'',max,wkn:nz(c.wkn)||weekOf(date),where:'',other:''});
     const r={};
@@ -1028,6 +1034,121 @@ document.addEventListener('keydown',e=>{
   let nr=tr0.nextElementSibling;while(nr&&!(nr.children[idx]&&nr.children[idx].querySelector('.gc')))nr=nr.nextElementSibling;
   if(nr){const n=nr.children[idx].querySelector('.gc'),sel=`[data-act="${n.dataset.act}"][data-i="${n.dataset.i}"][data-s="${n.dataset.s}"]`;el.blur();setTimeout(()=>{const x=document.querySelector(sel);if(x){x.focus();try{x.select()}catch(_){}}},30)}else el.blur();
 });
+/* ---------- supplies page, weekly attitude, office hours by grade, students needing support ---------- */
+Object.assign(T,{
+ supplies:['Supplies','الأدوات'],weak:['Students Needing Support','الطلاب الضعاف'],
+ sp_ok:['Complete','كاملة'],sp_miss:['Missing','ناقص'],sp_all:['Mark all complete','تسجيل الكل كاملة'],sp_hint:['Tap what is MISSING for each student. ✓ = brought everything. Absent students are skipped.','اضغطي على الناقص عند كل طالب. ✓ = جاب كل الأدوات. الغائبون لا يُحسبون.'],
+ atw_note:['Rate each student once a week.','قيّمي كل طالب مرة واحدة في الأسبوع.'],atw_copy:['Copy last week','نسخ الأسبوع الماضي'],atw_week:['Week','الأسبوع'],
+ oh_grade:['Grade','المرحلة'],oh_pick:['Choose students (all classes of this grade)','اختاري الطلاب (من كل فصول المرحلة)'],oh_sel:['selected','مختار'],oh_all:['All','الكل'],oh_none:['None','لا أحد'],
+ oh_edit:['Edit students','تعديل الطلاب'],oh_done:['Done','تم'],oh_nosel:['Choose at least one student.','اختاري طالبًا واحدًا على الأقل.'],oh_inv:['students','طالب'],
+ wk_thr:['Below','أقل من'],wk_allg:['All grades','كل المراحل'],wk_why:['Needs support in','يحتاج دعم في'],wk_pin:['📌 Keep on list','📌 تثبيت'],wk_pinned:['📌 Pinned','📌 مثبّت'],wk_note:['Note','ملاحظة'],
+ wk_oh:['Create office hours for selected','إنشاء أوفيس أورز للمختارين'],wk_none:['No students below this level 🎉','لا يوجد طلاب أقل من هذا المستوى 🎉'],wk_pickgrade:['Choose one grade first.','اختاري مرحلة واحدة أولًا.'],
+ wk_from:['From week','من أسبوع'],wk_to:['To week','إلى أسبوع'],wk_allw:['All weeks','كل الأسابيع'],wk_hint:['Students whose overall score is below the level you choose, or that you pinned.','الطلاب اللي مستواهم العام أقل من المستوى اللي تختاريه، أو اللي ثبّتيهم.'],
+ cd_nobhint:['Also recorded in Supplies for this day.','بتتسجل كمان في صفحة الأدوات لنفس اليوم.']
+});
+NAV.splice(4,0,['supplies','🎒']);
+NAV.splice(NAV.findIndex(n=>n[0]==='reports'),0,['weak','🌱']);
+const SUP=['bk','sb','as','ex','cb'];
+(function(){const s=document.createElement('style');s.textContent=`.chip.ok.on{background:var(--ok);border-color:var(--ok);color:#fff}.wkrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line)}.wkrow:last-child{border:0}.mm{display:inline-flex;gap:4px;flex-wrap:wrap}.mm .pill{font-size:.75rem}`;document.head.appendChild(s)})();
+
+/* ----- supplies ----- */
+function vSup(){
+  if(!classes().length)return needCls();
+  const bar=clsDateBar(),sts=students(fc);
+  if(!sts.length)return `<div class="panel">${bar}<div class="empty">${tr('needstu')}</div></div>`;
+  const d=D['sup_'+fc+'_'+fdate]||{r:{}},att=D['att_'+fc+'_'+fdate];
+  const rows=sts.map(s=>{
+    const e=d.r&&d.r[s.id],ab=att&&att.r&&att.r[s.id]==='a',ok=Array.isArray(e)&&!e.length;
+    return `<div class="line"><span class="nm">${esc(s.name)}${ab?` <span class="pill bad">${tr('absent')}</span>`:''}</span><span class="row"><button type="button" class="chip ok${ok?' on':''}" data-act="sp-ok" data-s="${s.id}">✓ ${tr('sp_ok')}</button>${SUP.map(k=>`<button type="button" class="chip bad${Array.isArray(e)&&e.indexOf(k)>=0?' on':''}" data-act="sp-t" data-s="${s.id}" data-k="${k}">${tr('w_'+k)}</button>`).join('')}</span></div>`}).join('');
+  return `<div class="panel"><h2>🎒 ${tr('supplies')} <button class="btn sm" data-act="sp-all">${tr('sp_all')}</button></h2>${bar}<div class="small muted" style="margin-bottom:6px">${tr('sp_hint')}</div>${rows}</div>`;
+}
+
+/* ----- weekly attitude ----- */
+let awk=0;
+const wkStart=n=>{const d=pd(cfg.start);d.setDate(d.getDate()+(n-1)*7);return ymd(d)};
+const weekOpts=(cur,withAll)=>(withAll?`<option value="0"${!cur?' selected':''}>${tr('wk_allw')}</option>`:'')+Array.from({length:+cfg.weeks||18},(_,i)=>`<option value="${i+1}"${cur===i+1?' selected':''}>${tr('week')} ${i+1} · ${fds(wkStart(i+1))}</option>`).join('');
+vAtd=function(){
+  const cl=classes();if(!cl.length)return needCls();if(!fc)fc=cl[0].code;if(!awk)awk=weekOf(today());
+  const sts=students(fc),tabs=`<div class="tabs">${cl.map(c=>`<button class="${c.code===fc?'on':''}" data-act="fc" data-id="${esc(c.code)}">${esc(c.code)}</button>`).join('')}</div>`;
+  const nav=`<div class="row" style="margin-bottom:10px"><button class="btn sm" data-act="aw-nav" data-v="-1">‹</button><select id="aw-sel" data-act="aw-sel" style="width:auto">${weekOpts(awk)}</select><button class="btn sm" data-act="aw-nav" data-v="1">›</button><button class="btn sm" data-act="aw-copy">${tr('atw_copy')}</button></div>`;
+  const d=D['atd_'+fc+'_w'+awk]||{r:{}};
+  const lines=sts.length?sts.map(s=>`<div class="line"><span class="nm">${esc(s.name)}</span>${seg([1,2,3,4,5].map(n=>[n,'★'+n,n>=4?'ok':n===3?'warn':'bad']),d.r&&d.r[s.id],`data-act="atw-set" data-s="${s.id}"`)}</div>`).join(''):`<div class="empty">${tr('needstu')}</div>`;
+  return `<div class="panel"><h2>⭐ ${tr('attitude')}</h2>${tabs}${nav}<div class="small muted" style="margin-bottom:6px">${tr('atw_note')}</div>${lines}</div>`;
+};
+
+/* ----- office hours by grade ----- */
+const gradeOf=c=>{const m=String(c).match(/^\d+/);return m?m[0]:String(c)};
+const gradesList=()=>[...new Set(classes().map(c=>gradeOf(c.code)))];
+let ohG='',ohSel=new Set(),ohD={date:'',topic:''},ohEdit=null;
+const picker=(g,sel,act,extra)=>classes().filter(c=>gradeOf(c.code)===g).map(c=>`<div class="cdg"><div class="cdh"><b>${esc(c.code)}</b><button type="button" class="btn sm" data-act="${act}-all" data-c="${esc(c.code)}" ${extra}>${tr('oh_all')}</button><button type="button" class="btn sm" data-act="${act}-none" data-c="${esc(c.code)}" ${extra}>${tr('oh_none')}</button></div><div class="chips">${students(c.code).map(s=>`<button type="button" class="chip${sel.has(s.id)?' on':''}" data-act="${act}" data-s="${s.id}" ${extra}>${esc(s.name)}</button>`).join('')||`<span class="muted small">${tr('needstu')}</span>`}</div></div>`).join('');
+vOff=function(){
+  const cl=classes();if(!cl.length)return needCls();
+  const gs=gradesList();if(!ohG||gs.indexOf(ohG)<0)ohG=gs[0];
+  if(!ohD.date)ohD.date=today();
+  const form=`<div class="tabs">${gs.map(g=>`<button class="${g===ohG?'on':''}" data-act="oh-g" data-v="${esc(g)}">${tr('oh_grade')} ${esc(g)}</button>`).join('')}</div><div class="form"><div><label for="o-d">${tr('date')}</label><input id="o-d" type="date" value="${esc(ohD.date)}" data-act="oh-f" data-k="date"></div><div><label for="o-t">${tr('topic')}</label><input id="o-t" value="${esc(ohD.topic)}" autocomplete="off" data-act="oh-f" data-k="topic"></div></div><div class="cdh"><b>${tr('oh_pick')}</b><span class="pill">${ohSel.size} ${tr('oh_sel')}</span></div>${picker(ohG,ohSel,'ohp','')}<div style="margin-top:10px"><button class="btn pri" data-act="oh-add">${tr('addoh')}</button></div>`;
+  const os=all('oh').sort((a,b)=>String(b.date).localeCompare(String(a.date))||(b.at||0)-(a.at||0));
+  const list=os.length?os.map(o=>{
+    const sts=o.inv?o.inv.map(id=>D[id]).filter(Boolean):students(o.cls),op=openId===o.id,n=sts.filter(s=>o.r&&o.r[s.id]==='p').length;
+    const lab=o.inv?tr('oh_grade')+' '+esc(o.grade||''):esc(o.cls||'');
+    const body=op?'<div style="margin-top:8px">'+(o.inv?`<div class="row" style="margin-bottom:6px"><button class="btn sm" data-act="oh-edit" data-o="${o.id}">${ohEdit===o.id?'✓ '+tr('oh_done'):'✏️ '+tr('oh_edit')}</button></div>${ohEdit===o.id?picker(o.grade||ohG,new Set(o.inv),'ohi','data-o="'+o.id+'"'):''}`:'')
+      +(sts.length?sts.map(s=>`<div class="line"><span class="nm">${esc(s.name)}${o.inv?` <span class="pill">${esc(s.cls)}</span>`:''}</span>${seg([['p',tr('present'),'ok'],['a',tr('absent'),'bad']],o.r&&o.r[s.id],`data-act="oh-set" data-o="${o.id}" data-s="${s.id}"`)}</div>`).join(''):`<div class="empty">${tr('needstu')}</div>`)+`<div style="margin-top:8px">${delBtn('del-oh',o.id)}</div></div>`:'';
+    return `<div class="panel" style="margin-top:10px"><div class="ph2" data-act="open" data-id="${o.id}" style="cursor:pointer"><span><b>${fdt(o.date)}</b><br><span class="muted small">${lab}${o.topic?' · '+esc(o.topic):''}</span></span><span class="pill">${n}/${sts.length} ${tr('attended')}</span></div>${body}</div>`}).join(''):`<div class="empty" style="margin-top:10px">${tr('nooh')}</div>`;
+  return `<div class="panel"><h2>🗓️ ${tr('office')}</h2>${form}</div>${list}`;
+};
+
+/* ----- students needing support ----- */
+let wkG=null,wkThr=70,wkF=0,wkT=0,wkPick=new Set();
+const MK=[['hw','homework'],['as','assessment'],['att','attendance'],['sup','supplies'],['atdP','attitude']];
+function vWeak(){
+  const cl=classes();if(!cl.length)return needCls();
+  const gs=gradesList();if(wkG===null)wkG=gs[0]||'';
+  const rows=[];
+  cl.forEach(c=>{if(wkG&&gradeOf(c.code)!==wkG)return;students(c.code).forEach(s=>{const m=metrics(s.id,s.cls,wkF,wkT),pin=!!D['weak_'+s.id];if(pin||(m.overall!=null&&m.overall<wkThr))rows.push({s,m,pin})})});
+  rows.sort((a,b)=>(a.m.overall==null?999:a.m.overall)-(b.m.overall==null?999:b.m.overall));
+  const tabs=`<div class="tabs">${gs.map(g=>`<button class="${g===wkG?'on':''}" data-act="wk-g" data-v="${esc(g)}">${tr('oh_grade')} ${esc(g)}</button>`).join('')}<button class="${wkG===''?'on':''}" data-act="wk-g" data-v="">${tr('wk_allg')}</button></div>`;
+  const ctl=`<div class="form"><div><label for="wk-thr">${tr('wk_thr')}</label><select id="wk-thr" data-act="wk-thr">${[60,70,75,80,85].map(v=>`<option value="${v}"${v===wkThr?' selected':''}>${v}%</option>`).join('')}</select></div><div><label for="wk-f">${tr('wk_from')}</label><select id="wk-f" data-act="wk-w" data-k="f">${weekOpts(wkF,true)}</select></div><div><label for="wk-t">${tr('wk_to')}</label><select id="wk-t" data-act="wk-w" data-k="t">${weekOpts(wkT,true)}</select></div></div>`;
+  const list=rows.length?rows.map(({s,m,pin})=>{
+    const tone=v=>v==null?'':v<wkThr?'bad':'ok';
+    const chips=MK.map(([k,l])=>`<span class="pill ${tone(m[k])}">${tr(l).replace('Classroom ','')} ${m[k]==null?'–':m[k]+'%'}</span>`).join('');
+    const why=MK.filter(([k])=>m[k]!=null&&m[k]<wkThr).map(([,l])=>tr(l).replace('Classroom ','')).join(' · ');
+    const nt=D['weak_'+s.id];
+    return `<div class="wkrow"><div style="flex:1 1 220px;min-width:0"><div><button type="button" class="chip${wkPick.has(s.id)?' on':''}" data-act="wk-sel" data-s="${s.id}">${esc(s.name)} · ${esc(s.cls)}</button> <b>${m.overall==null?'–':m.overall+'%'}</b></div><div class="mm" style="margin-top:4px">${chips}</div>${why?`<div class="small muted" style="margin-top:4px">${tr('wk_why')}: ${esc(why)}</div>`:''}<input style="margin-top:6px" placeholder="${tr('wk_note')}" value="${esc(nt&&nt.note||'')}" data-act="wk-note" data-s="${s.id}"></div><div class="row"><button type="button" class="btn sm" data-act="wk-pin" data-s="${s.id}">${pin?tr('wk_pinned'):tr('wk_pin')}</button><button class="btn sm" data-act="rep-go" data-id="${s.id}">📊</button></div></div>`}).join(''):`<div class="empty">${tr('wk_none')}</div>`;
+  return `<div class="panel"><h2>🌱 ${tr('weak')}</h2><div class="small muted" style="margin-bottom:8px">${tr('wk_hint')}</div>${tabs}${ctl}<div class="row" style="margin-bottom:6px"><span class="pill">${wkPick.size} ${tr('oh_sel')}</span><button class="btn pri sm" data-act="wk-oh">🗓️ ${tr('wk_oh')}</button></div>${list}</div>`;
+}
+
+/* ----- events ----- */
+const supPatch=(cls,date,r)=>patch('sup_'+cls+'_'+date,{t:'sup',cls,date,r:{}},{r});
+document.addEventListener('click',async e=>{
+  const el=e.target.closest('[data-act]');if(!el||!col)return;const a=el.dataset.act,d=el.dataset;
+  if(a==='sp-t'){const cur=(((D['sup_'+fc+'_'+fdate]||{}).r||{})[d.s]||[]).slice(),i=cur.indexOf(d.k);if(i>=0)cur.splice(i,1);else cur.push(d.k);return supPatch(fc,fdate,{[d.s]:cur})}
+  if(a==='sp-ok'){const e0=((D['sup_'+fc+'_'+fdate]||{}).r||{})[d.s];return supPatch(fc,fdate,{[d.s]:(Array.isArray(e0)&&!e0.length)?null:[]})}
+  if(a==='sp-all'){const doc=D['sup_'+fc+'_'+fdate]||{r:{}},att=D['att_'+fc+'_'+fdate],r={};students(fc).forEach(s=>{const ab=att&&att.r&&att.r[s.id]==='a';if(!ab&&!Array.isArray(doc.r&&doc.r[s.id]))r[s.id]=[]});if(Object.keys(r).length)await supPatch(fc,fdate,r);return}
+  if(a==='aw-nav'){awk=Math.max(1,Math.min(+cfg.weeks||18,(awk||weekOf(today()))+ +d.v));return render()}
+  if(a==='aw-copy'){const prev=D['atd_'+fc+'_w'+(awk-1)];if(!prev||!prev.r){toast(tr('none'));return}await patch('atd_'+fc+'_w'+awk,{t:'atd',cls:fc,date:wkStart(awk),wk:awk,r:{}},{r:Object.assign({},prev.r)});return}
+  if(a==='atw-set'){await patch('atd_'+fc+'_w'+awk,{t:'atd',cls:fc,date:wkStart(awk),wk:awk,r:{}},{r:{[d.s]:+d.v}});return}
+  if(a==='oh-g'){ohG=d.v;ohSel=new Set();return render()}
+  if(a==='ohp'){if(ohSel.has(d.s))ohSel.delete(d.s);else ohSel.add(d.s);return render()}
+  if(a==='ohp-all'){students(d.c).forEach(s=>ohSel.add(s.id));return render()}
+  if(a==='ohp-none'){students(d.c).forEach(s=>ohSel.delete(s.id));return render()}
+  if(a==='oh-add'){if(!ohSel.size){toast(tr('oh_nosel'));return}await put(newId(),{t:'oh',grade:ohG,cls:'',date:ohD.date||today(),topic:(ohD.topic||'').trim(),inv:[...ohSel],r:{}});ohSel=new Set();ohD.topic='';toast(tr('saved'));return}
+  if(a==='oh-edit'){ohEdit=ohEdit===d.o?null:d.o;return render()}
+  if(a==='ohi'||a==='ohi-all'||a==='ohi-none'){const o=D[d.o];if(!o)return;const set=new Set(o.inv||[]);
+    if(a==='ohi'){if(set.has(d.s))set.delete(d.s);else set.add(d.s)}else students(d.c).forEach(s=>{if(a==='ohi-all')set.add(s.id);else set.delete(s.id)});
+    await patch(d.o,{},{inv:[...set]});return}
+  if(a==='wk-g'){wkG=d.v;wkPick=new Set();return render()}
+  if(a==='wk-sel'){if(wkPick.has(d.s))wkPick.delete(d.s);else wkPick.add(d.s);return render()}
+  if(a==='wk-pin'){if(D['weak_'+d.s])await remove(['weak_'+d.s]);else await put('weak_'+d.s,{t:'weak',sid:d.s,note:''});return}
+  if(a==='wk-oh'){if(!wkPick.size){toast(tr('oh_nosel'));return}if(!wkG){toast(tr('wk_pickgrade'));return}ohG=wkG;ohSel=new Set([...wkPick].filter(id=>D[id]&&gradeOf(D[id].cls)===wkG));wkPick=new Set();return goto('office')}
+});
+document.addEventListener('change',e=>{
+  const el=e.target,d=el.dataset;if(!d||!d.act)return;
+  if(d.act==='aw-sel'){awk=+el.value;return render()}
+  if(d.act==='wk-thr'){wkThr=+el.value;return render()}
+  if(d.act==='wk-w'){const v=+el.value||0;if(d.k==='f'){wkF=v;if(wkT&&wkF>wkT)wkT=wkF}else{wkT=v;if(wkT&&wkF>wkT)wkF=wkT}return render()}
+  if(d.act==='wk-note'&&col){patch('weak_'+d.s,{t:'weak',sid:d.s},{note:el.value.trim()});return}
+  if(d.act==='oh-f'){ohD[d.k]=el.value;return}
+});
+document.addEventListener('input',e=>{const el=e.target,d=el.dataset;if(d&&d.act==='oh-f')ohD[d.k]=el.value});
 /* ---------- settings ---------- */
 function vSet(){
   const dn=dayNames(),cl=classes();
@@ -1053,7 +1174,7 @@ function render(){
   const v=$('#view');
   if(!dbOk){v.innerHTML=`<div class="empty">${tr('signin')}</div>`;return}
   if(!loaded){v.innerHTML=`<div class="empty">${slow?tr('slow'):tr('loading')}</div>`;return}
-  v.innerHTML=({dashboard:vDash,classes:vClasses,students:vStudents,attendance:vAtt,homework:vHw,assessment:vAss,attitude:vAtd,office:vOff,corr:vCor,reports:vRep,settings:vSet})[view]();
+  v.innerHTML=({dashboard:vDash,classes:vClasses,students:vStudents,attendance:vAtt,homework:vHw,assessment:vAss,attitude:vAtd,office:vOff,corr:vCor,supplies:vSup,weak:vWeak,reports:vRep,settings:vSet})[view]();
   afterRender();
 }
 const val=id=>{const e=$('#'+id);return e?e.value.trim():''};
